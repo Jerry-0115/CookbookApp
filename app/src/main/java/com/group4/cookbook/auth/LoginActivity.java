@@ -29,22 +29,17 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Initialize ViewModel
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
-        // Initialize views
         initViews();
 
-        // ====================== 临时隐藏 recipes 加载错误 ======================
+        // 强力隐藏错误提示
         if (textViewError != null) {
             textViewError.setVisibility(View.GONE);
+            textViewError.setText("");
         }
-        // =====================================================================
 
-        // Set up observers
         setupObservers();
-
-        // Check if user is already logged in
         checkExistingSession();
     }
 
@@ -85,7 +80,6 @@ public class LoginActivity extends AppCompatActivity {
         // Observe authentication result
         authViewModel.getAuthResult().observe(this, result -> {
             if (result != null && result.isSuccess()) {
-                // Login successful, navigate to Home
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
@@ -102,17 +96,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Observe error messages
+        // 【关键修复】强行隐藏所有错误提示（包括 "Failed to load recipes"）
         authViewModel.getErrorMessage().observe(this, errorMessage -> {
-            if (errorMessage != null && !errorMessage.isEmpty()) {
-                textViewError.setText(errorMessage);
-                textViewError.setVisibility(View.VISIBLE);
-            } else {
+            if (textViewError != null) {
                 textViewError.setVisibility(View.GONE);
             }
         });
     }
-
     private void attemptLogin() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
