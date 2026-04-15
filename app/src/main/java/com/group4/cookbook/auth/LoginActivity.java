@@ -35,6 +35,12 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize views
         initViews();
 
+        // ====================== 临时隐藏 recipes 加载错误 ======================
+        if (textViewError != null) {
+            textViewError.setVisibility(View.GONE);
+        }
+        // =====================================================================
+
         // Set up observers
         setupObservers();
 
@@ -118,7 +124,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkExistingSession() {
-        // Check if user is already logged in via Firebase Auth directly
         if (authViewModel.getAuthResult().getValue() != null &&
                 authViewModel.getAuthResult().getValue().isSuccess()) {
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
@@ -126,10 +131,10 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
     }
+
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if user is already logged in (Firebase persists session)
         if (authViewModel.getAuthResult().getValue() != null &&
                 authViewModel.getAuthResult().getValue().isSuccess()) {
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
@@ -137,9 +142,9 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 }
